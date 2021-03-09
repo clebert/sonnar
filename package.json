@@ -1,6 +1,6 @@
 {
   "name": "sonnar",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Building page object-like APIs for testing web pages.",
   "bugs": {
     "url": "https://github.com/clebert/sonnar/issues"
