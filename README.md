@@ -1,6 +1,12 @@
 # Sonnar
 
-Building page object-like APIs for testing web pages.
+Building page-object-like JS APIs for end-to-end testing web pages.
+
+## Contents
+
+- [Introduction](#introduction)
+- [Getting started](#getting-started)
+- [API](#api)
 
 ## Introduction
 
@@ -24,9 +30,9 @@ By way of introduction, some quotes from the article
 > The rule of thumb is to model the structure in the page that makes sense to
 > the user of the application.
 
-## Example
+## Getting started
 
-In the following example, a fictitious website is tested which displays a list
+In the following example, a fictitious web page is tested which displays a list
 of music albums. The rating of the album "The Wall" is to be changed to 5.
 
 It is assumed that the semantic names of the UI components have been assigned to
@@ -35,19 +41,19 @@ point of view of the tests, this is an implementation detail and is hidden from
 them. It only serves to keep the CSS selectors simple, but is also a good and
 common practice in the real world.
 
-### Installing Sonnar
+### Install Sonnar
 
 ```
 npm install sonnar --save-dev
 ```
 
-### Importing the required Sonnar functions
+### Import the required Sonnar functions
 
 ```js
 import {descendant, pseudoClass, query} from 'sonnar';
 ```
 
-### Defining the API of the website
+### Define the API of the web page
 
 UI components that may occur more than once on a web page and require further
 discrimination should, as a convention, be named in the plural form. Here this
@@ -60,7 +66,7 @@ const Albums = query('.Album', {
 });
 ```
 
-### Implementing the end-to-end test
+### Implement a first end-to-end test
 
 The following test is implemented with [Playwright](https://playwright.dev). In
 general, however, all CSS selector-based test frameworks are compatible with
@@ -91,11 +97,16 @@ can be used, for example. Playwright provides a very handy pseudo-class called
 const hasText = (text) => pseudoClass(`:has-text("${text}")`);
 ```
 
-## Other examples
+### Find more end-to-end tests
 
-Below are some links to "real world" tests implemented with Sonnar:
+- A real-world test implemented with Sonnar and Playwright:
+  [bookmark.wtf](https://github.com/clebert/bookmark.wtf/blob/main/src/e2e-tests/bookmark-wtf.e2e-test.ts)
 
-- [bookmark.wtf](https://github.com/clebert/bookmark.wtf/blob/main/src/itests/bookmark-wtf.itest.ts)
+## API
+
+To get an impression of the functions and the use of the API,
+[this unit test](https://github.com/clebert/sonnar/blob/main/src/index.test.ts)
+can be read.
 
 ---
 
