@@ -22,12 +22,6 @@ test('sonnar', () => {
   expect(Foo().Qux().selector).toBe('#foo > #qux');
   expect(Foo().Quux().selector).toBe('#foo ~ #quux');
 
-  expect(Foo.Bar().selector).toBe('#bar');
-  expect(Foo.Bar.Baz().selector).toBe('+ #baz');
-  expect(Foo.Bar().Baz().selector).toBe('#bar + #baz');
-  expect(Foo.Qux().selector).toBe('> #qux');
-  expect(Foo.Quux().selector).toBe('~ #quux');
-
   const a = pseudoClass(':a');
   const b = pseudoClass(':b');
   const c = pseudoClass(':c');
@@ -38,4 +32,8 @@ test('sonnar', () => {
   expect(Foo(a, b).Bar(c).Baz(d).selector).toBe('#foo:a:b #bar:c + #baz:d');
   expect(Foo(a, b).Qux(c).selector).toBe('#foo:a:b > #qux:c');
   expect(Foo(a, b).Quux(c).selector).toBe('#foo:a:b ~ #quux:c');
+
+  expect(() => query('#foo', {bar: descendant('#bar', {})})).toThrow(
+    new Error('The name of a combinator must begin with a capital letter.')
+  );
 });

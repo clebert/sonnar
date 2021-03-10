@@ -1,11 +1,6 @@
-export type Query<
-  TCombinators extends Combinators
-> = CombinatorialQueries<TCombinators> &
-  ((...discriminators: readonly Discriminator[]) => VirtualNode<TCombinators>);
-
-export type CombinatorialQueries<TCombinators extends Combinators> = {
-  readonly [TKey in keyof TCombinators]: ReturnType<TCombinators[TKey]>;
-};
+export type Query<TCombinators extends Combinators> = (
+  ...discriminators: readonly Discriminator[]
+) => VirtualNode<TCombinators>;
 
 export interface Combinators {
   readonly [key: string]: Combinator<any>;
@@ -21,26 +16,38 @@ export type VirtualNode<
   TCombinators extends Combinators
 > = CombinatorialQueries<TCombinators> & {readonly selector: string};
 
+export type CombinatorialQueries<TCombinators extends Combinators> = {
+  readonly [TKey in keyof TCombinators]: ReturnType<TCombinators[TKey]>;
+};
+
 export function query<TCombinators extends Combinators>(
   selector: string,
   combinators: TCombinators
 ): Query<TCombinators> {
-  return Object.assign((...discriminators: readonly Discriminator[]) => {
+  for (const key of Object.keys(combinators)) {
+    if (!/[A-Z]/.test(key.charAt(0))) {
+      throw new Error(
+        'The name of a combinator must begin with a capital letter.'
+      );
+    }
+  }
+
+  return (...discriminators: readonly Discriminator[]) => {
     const discriminatedSelector = discriminators.reduce(
       (accu, discriminator) => discriminator(accu),
-      selector.trim()
+      selector
     );
 
     return {
       ...createCombinatorialQueries(combinators, discriminatedSelector),
       selector: discriminatedSelector,
     };
-  }, createCombinatorialQueries(combinators));
+  };
 }
 
 function createCombinatorialQueries<TCombinators extends Combinators>(
   combinators: TCombinators,
-  firstSelector: string = ''
+  firstSelector: string
 ): CombinatorialQueries<TCombinators> {
   return Object.entries(combinators).reduce((accu, [key, combinator]) => {
     accu[key] = combinator(firstSelector);
