@@ -100,7 +100,7 @@ const hasText = (text) => pseudoClass(`:has-text("${text}")`);
 ### Find more end-to-end tests
 
 - A real-world test implemented with Sonnar and Playwright:
-  [bookmark.wtf](https://github.com/clebert/bookmark.wtf/blob/main/src/e2e-tests/bookmark-wtf.e2e-test.ts)
+  [bookmark.wtf](https://github.com/clebert/bookmark.wtf/blob/main/src/e2e-tests/app.e2e-test.ts)
 
 ## API
 
