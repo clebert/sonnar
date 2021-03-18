@@ -25,6 +25,8 @@ A lightweight TypeScript API for constructing
 - [Usage examples](#usage-examples)
   - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
   - [Group using parentheses](#group-using-parentheses)
+  - [Select the document root](#select-the-document-root)
+  - [Use a literal as the left-hand side of an expression](#use-a-literal-as-the-left-hand-side-of-an-expression)
 - [Type definitions](#type-definitions)
   - [`NodeSet`](#nodeset)
   - [`AxisName`](#axisname)
@@ -115,6 +117,8 @@ The meaning of a predicate depends crucially on which axis applies. For example,
 because the axis that applies to the `[1]` predicate is the preceding axis.
 
 ```ts
+import {select} from 'sonnar';
+
 select('preceding', 'foo').filter(1);
 ```
 
@@ -123,6 +127,24 @@ order, because the axis that applies to the `[1]` predicate is the child axis.
 
 ```ts
 select('preceding', 'foo').enclose().filter(1);
+```
+
+### Select the document root
+
+The `/` document root is always the parent of the document element.
+
+```ts
+import {root} from 'sonnar';
+
+root();
+```
+
+### Use a literal as the left-hand side of an expression
+
+```ts
+import {literal} from 'sonnar';
+
+literal(1).add(2).enclose().is('=', 3);
 ```
 
 ## Type definitions
