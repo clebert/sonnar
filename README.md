@@ -27,7 +27,7 @@ A lightweight TypeScript API for constructing
   - [Group using parentheses](#group-using-parentheses)
   - [Select the document root](#select-the-document-root)
   - [Use a literal as the left-hand side of an expression](#use-a-literal-as-the-left-hand-side-of-an-expression)
-- [Type definitions](#type-definitions)
+- [API documentation](#api-documentation)
   - [`NodeSet`](#nodeset)
   - [`AxisName`](#axisname)
   - [`NodeTest`](#nodetest)
@@ -147,7 +147,7 @@ import {literal} from 'sonnar';
 literal(1).add(2).enclose().is('=', 3);
 ```
 
-## Type definitions
+## API documentation
 
 ### `NodeSet`
 
@@ -162,6 +162,13 @@ class NodeSet extends Primitive {
   select(axisName: AxisName, nodeName: string): this;
   union(operand: NodeSet): this;
 }
+```
+
+**Note:** For more convenient use, the `root` and `select` functions are
+exported directly from the top level module.
+
+```ts
+import {root, select} from 'sonnar';
 ```
 
 ### `AxisName`
@@ -214,6 +221,13 @@ class Primitive {
   divide(operand: Literal | Primitive): this;
   mod(operand: Literal | Primitive): this;
 }
+```
+
+**Note:** For more convenient use, the `literal` function is exported directly
+from the top level module.
+
+```ts
+import {literal} from 'sonnar';
 ```
 
 ### `Literal`
