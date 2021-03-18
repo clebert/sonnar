@@ -6,9 +6,9 @@ test('Find all HackerNews posts which have more than 50 comments', () => {
     .filter(
       select('following-sibling', 'tr')
         .filter(fn('position').is('=', 1)) // less verbose alternative: .filter(1)
-        .select('child', 'td')
+        .path(select('child', 'td'))
         .filter(2)
-        .select('child', 'a')
+        .path(select('child', 'a'))
         .filter(fn('last'))
         .filter(
           fn('substring-before', select('child').text(), '\u00A0').is('>', 50)
@@ -41,21 +41,22 @@ test('W3C Location Path Examples', () => {
   expect(select('self', 'para').expression).toBe('self::para');
 
   expect(
-    select('child', 'chapter').select('descendant', 'para').expression
+    select('child', 'chapter').path(select('descendant', 'para')).expression
   ).toBe('child::chapter / descendant::para');
 
-  expect(select('child', '*').select('child', 'para').expression).toBe(
+  expect(select('child', '*').path(select('child', 'para')).expression).toBe(
     'child::* / child::para'
   );
 
   expect(root().expression).toBe('/');
 
-  expect(root().select('descendant', 'para').expression).toBe(
+  expect(root().path(select('descendant', 'para')).expression).toBe(
     '/ descendant::para'
   );
 
   expect(
-    root().select('descendant', 'olist').select('child', 'item').expression
+    root().path(select('descendant', 'olist')).path(select('child', 'item'))
+      .expression
   ).toBe('/ descendant::olist / child::item');
 
   expect(
@@ -88,16 +89,17 @@ test('W3C Location Path Examples', () => {
   ).toBe('preceding-sibling::chapter[position() = 1]');
 
   expect(
-    root().select('descendant', 'figure').filter(fn('position').is('=', 42))
-      .expression
+    root()
+      .path(select('descendant', 'figure'))
+      .filter(fn('position').is('=', 42)).expression
   ).toBe('/ descendant::figure[position() = 42]');
 
   expect(
     root()
-      .select('child', 'doc')
-      .select('child', 'chapter')
+      .path(select('child', 'doc'))
+      .path(select('child', 'chapter'))
       .filter(fn('position').is('=', 5))
-      .select('child', 'section')
+      .path(select('child', 'section'))
       .filter(fn('position').is('=', 2)).expression
   ).toBe(
     '/ child::doc / child::chapter[position() = 5] / child::section[position() = 2]'

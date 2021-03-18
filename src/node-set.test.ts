@@ -48,21 +48,16 @@ describe('NodeSet', () => {
     expect(nodeTest).toBeInstanceOf(NodeTest);
     expect(comment).toBeInstanceOf(NodeSet);
     expect(comment.expression).toBe('child::comment()');
-    expect(node).toBeInstanceOf(NodeSet);
     expect(node.expression).toBe('child::node()');
-    expect(processingInstruction1).toBeInstanceOf(NodeSet);
 
     expect(processingInstruction1.expression).toBe(
       'child::processing-instruction()'
     );
 
-    expect(processingInstruction2).toBeInstanceOf(NodeSet);
-
     expect(processingInstruction2.expression).toBe(
       'child::processing-instruction(target)'
     );
 
-    expect(text).toBeInstanceOf(NodeSet);
     expect(text.expression).toBe('child::text()');
   });
 
@@ -73,52 +68,40 @@ describe('NodeSet', () => {
     expect(value.expression).toBe('/[child::foo["0"]]["1"]');
   });
 
-  test('select()', () => {
-    const nodeSet1 = root().select('child', 'foo').select('child', 'bar');
-    const nodeSet2 = select('child', 'foo').select('child', 'bar');
+  test('path()', () => {
+    const nodeSet1 = root()
+      .path(select('child', 'foo').path(select('child', 'bar').filter('0')))
+      .path(select('child', 'baz'))
+      .filter('1');
+
+    const nodeSet2 = select('child', 'foo')
+      .path(select('child', 'bar').filter('0'))
+      .path(select('child', 'baz'))
+      .filter('1');
 
     expect(nodeSet1).toBeInstanceOf(NodeSet);
-    expect(nodeSet1.expression).toBe('/ child::foo / child::bar');
+
+    expect(nodeSet1.expression).toBe(
+      '/ child::foo / child::bar["0"] / child::baz["1"]'
+    );
+
     expect(nodeSet2).toBeInstanceOf(NodeSet);
-    expect(nodeSet2.expression).toBe('child::foo / child::bar');
 
-    const nodeTest = root().select('child');
-    const comment = nodeTest.comment();
-    const node = nodeTest.node();
-    const processingInstruction1 = nodeTest.processingInstruction();
-    const processingInstruction2 = nodeTest.processingInstruction('target');
-    const text = nodeTest.text();
-
-    expect(nodeTest).toBeInstanceOf(NodeTest);
-    expect(comment).toBeInstanceOf(NodeSet);
-    expect(comment.expression).toBe('/ child::comment()');
-    expect(node).toBeInstanceOf(NodeSet);
-    expect(node.expression).toBe('/ child::node()');
-    expect(processingInstruction1).toBeInstanceOf(NodeSet);
-
-    expect(processingInstruction1.expression).toBe(
-      '/ child::processing-instruction()'
+    expect(nodeSet2.expression).toBe(
+      'child::foo / child::bar["0"] / child::baz["1"]'
     );
-
-    expect(processingInstruction2).toBeInstanceOf(NodeSet);
-
-    expect(processingInstruction2.expression).toBe(
-      '/ child::processing-instruction(target)'
-    );
-
-    expect(text).toBeInstanceOf(NodeSet);
-    expect(text.expression).toBe('/ child::text()');
   });
 
   test('union()', () => {
     const value = root()
       .union(select('child', 'foo').union(select('child', 'bar').filter('0')))
-      .union(select('child', 'baz'));
+      .union(select('child', 'baz'))
+      .filter('1');
 
     expect(value).toBeInstanceOf(NodeSet);
 
     expect(value.expression).toBe(
-      '/ | child::foo | child::bar["0"] | child::baz'
+      '/ | child::foo | child::bar["0"] | child::baz["1"]'
     );
   });
 

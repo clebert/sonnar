@@ -40,16 +40,12 @@ export class NodeSet extends Primitive {
     );
   }
 
-  select(axisName: AxisName): NodeTest;
-  select(axisName: AxisName, nodeName: string): NodeSet;
+  path(operand: NodeSet): this {
+    const delimiter = this.expression === '/' ? ' ' : ' / ';
 
-  select(axisName: AxisName, nodeName?: string): NodeSet | NodeTest {
-    const prefix =
-      this.expression === '/'
-        ? `/ ${axisName}::`
-        : `${this.expression} / ${axisName}::`;
-
-    return nodeName ? new NodeSet(prefix + nodeName) : new NodeTest(prefix);
+    return this.createInstance(
+      `${this.expression}${delimiter}${operand.expression}`
+    );
   }
 
   union(operand: NodeSet): this {

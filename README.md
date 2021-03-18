@@ -97,9 +97,9 @@ const {expression} = select('descendant', 'tr')
   .filter(
     select('following-sibling', 'tr')
       .filter(fn('position').is('=', 1)) // less verbose alternative: .filter(1)
-      .select('child', 'td')
+      .path(select('child', 'td'))
       .filter(2)
-      .select('child', 'a')
+      .path(select('child', 'a'))
       .filter(fn('last'))
       .filter(
         fn('substring-before', select('child').text(), '\u00A0').is('>', 50)
@@ -163,8 +163,7 @@ class NodeSet extends Primitive {
   static select(axisName: AxisName, nodeName: string): NodeSet;
 
   filter(predicate: Literal | Primitive): this;
-  select(axisName: AxisName): NodeTest;
-  select(axisName: AxisName, nodeName: string): this;
+  path(operand: NodeSet): this;
   union(operand: NodeSet): this;
 }
 ```
