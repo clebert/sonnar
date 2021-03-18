@@ -34,10 +34,11 @@ A lightweight TypeScript API for constructing
   - [`Primitive`](#primitive)
   - [`Literal`](#literal)
   - [`ComparisonOperator`](#comparisonoperator)
-  - [Node Set Functions](#node-set-functions)
-  - [String Functions](#string-functions)
-  - [Boolean Functions](#boolean-functions)
-  - [Number Functions](#number-functions)
+  - [`fn()`](#fn)
+    - [Node-set functions](#node-set-functions)
+    - [String functions](#string-functions)
+    - [Boolean functions](#boolean-functions)
+    - [Number functions](#number-functions)
 
 ## Introduction
 
@@ -152,6 +153,10 @@ literal(1).add(2).enclose().is('=', 3);
 ### `NodeSet`
 
 ```ts
+import {NodeSet} from 'sonnar';
+```
+
+```ts
 class NodeSet extends Primitive {
   static root(): NodeSet;
   static select(axisName: AxisName): NodeTest;
@@ -164,8 +169,8 @@ class NodeSet extends Primitive {
 }
 ```
 
-**Note:** For more convenient use, the `root` and `select` functions are
-exported directly from the top level module.
+**Note:** For more convenient use, the `NodeSet.root` and `NodeSet.select`
+functions are exported directly from the top level module.
 
 ```ts
 import {root, select} from 'sonnar';
@@ -193,6 +198,10 @@ type AxisName =
 ### `NodeTest`
 
 ```ts
+import {NodeTest} from 'sonnar';
+```
+
+```ts
 class NodeTest {
   comment(): NodeSet;
   node(): NodeSet;
@@ -202,6 +211,10 @@ class NodeTest {
 ```
 
 ### `Primitive`
+
+```ts
+import {Primitive} from 'sonnar';
+```
 
 ```ts
 class Primitive {
@@ -223,8 +236,8 @@ class Primitive {
 }
 ```
 
-**Note:** For more convenient use, the `literal` function is exported directly
-from the top level module.
+**Note:** For more convenient use, the `Primitive.literal` function is exported
+directly from the top level module.
 
 ```ts
 import {literal} from 'sonnar';
@@ -242,7 +255,13 @@ type Literal = boolean | number | string;
 type ComparisonOperator = '=' | '!=' | '<' | '<=' | '>' | '>=';
 ```
 
-### Node Set Functions
+### `fn()`
+
+```ts
+import {fn} from 'sonnar';
+```
+
+#### Node-set functions
 
 ```ts
 /** `number last()` */
@@ -279,7 +298,7 @@ function fn(functionName: 'namespace-uri', arg?: NodeSet): Primitive;
 function fn(functionName: 'name', arg?: NodeSet): Primitive;
 ```
 
-### String Functions
+#### String functions
 
 ```ts
 /** `string string(object?)` */
@@ -368,7 +387,7 @@ function fn(
 ): Primitive;
 ```
 
-### Boolean Functions
+#### Boolean functions
 
 ```ts
 /** `boolean boolean(object)` */
@@ -385,7 +404,7 @@ function fn(functionName: 'not', arg: Literal | Primitive): Primitive;
 function fn(functionName: 'lang', arg: Literal | Primitive): Primitive;
 ```
 
-### Number Functions
+#### Number functions
 
 ```ts
 /** `number number(object?)` */

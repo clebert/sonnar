@@ -1,7 +1,7 @@
 import {NodeSet} from './node-set';
 import {Literal, Primitive} from './primitive';
 
-/* Node Set Functions *********************************************************/
+/* Node-set functions *********************************************************/
 
 /** `number last()` */
 export function fn(functionName: 'last'): Primitive;
@@ -24,7 +24,7 @@ export function fn(functionName: 'namespace-uri', arg?: NodeSet): Primitive;
 /** `string name(node-set?)` */
 export function fn(functionName: 'name', arg?: NodeSet): Primitive;
 
-/* String Functions ***********************************************************/
+/* String functions ***********************************************************/
 
 /** `string string(object?)` */
 export function fn(
@@ -96,7 +96,7 @@ export function fn(
   arg3: Literal | Primitive
 ): Primitive;
 
-/* Boolean Functions **********************************************************/
+/* Boolean functions **********************************************************/
 
 /** `boolean boolean(object)` */
 export function fn(
@@ -110,7 +110,7 @@ export function fn(functionName: 'not', arg: Literal | Primitive): Primitive;
 /** `boolean lang(string)` */
 export function fn(functionName: 'lang', arg: Literal | Primitive): Primitive;
 
-/* Number Functions ***********************************************************/
+/* Number functions ***********************************************************/
 
 /** `number number(object?)` */
 export function fn(
