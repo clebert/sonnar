@@ -1,6 +1,6 @@
 {
   "name": "sonnar",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A lightweight TypeScript API for constructing XPath 1.0 expressions.",
   "bugs": {
     "url": "https://github.com/clebert/sonnar/issues"
