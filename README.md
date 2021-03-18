@@ -24,6 +24,7 @@ A lightweight TypeScript API for constructing
 - [Installation](#installation)
 - [Usage examples](#usage-examples)
   - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
+  - [Group using parentheses](#group-using-parentheses)
 - [Type definitions](#type-definitions)
   - [`NodeSet`](#nodeset)
   - [`AxisName`](#axisname)
@@ -105,6 +106,23 @@ const {expression} = select('descendant', 'tr')
 expect(expression).toBe(
   'descendant::tr[contains(attribute::class, "athing")][following-sibling::tr[position() = 1] / child::td[2] / child::a[last()][substring-before(child::text(), "\u00A0") > 50]]'
 );
+```
+
+### Group using parentheses
+
+The meaning of a predicate depends crucially on which axis applies. For example,
+`preceding::foo[1]` returns the first `foo` element in reverse document order,
+because the axis that applies to the `[1]` predicate is the preceding axis.
+
+```ts
+select('preceding', 'foo').filter(1);
+```
+
+By contrast, `(preceding::foo)[1]` returns the first `foo` element in document
+order, because the axis that applies to the `[1]` predicate is the child axis.
+
+```ts
+select('preceding', 'foo').enclose().filter(1);
 ```
 
 ## Type definitions
