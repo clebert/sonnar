@@ -33,11 +33,11 @@ syntax highlighting, and you quickly get lost in the parentheses. That's why I
 developed a lightweight TypeScript API around XPath 1.0 that's just as powerful,
 but doesn't have the above problems.
 
-## Usage Examples
+## Usage examples
 
 ### Find all [HackerNews](https://news.ycombinator.com) posts which have more than 50 comments
 
-XPath 1.0 abbreviated syntax:
+#### XPath 1.0 abbreviated syntax
 
 ```
 // tr
@@ -51,7 +51,7 @@ XPath 1.0 abbreviated syntax:
   ]
 ```
 
-XPath 1.0 verbose syntax:
+#### XPath 1.0 verbose syntax
 
 ```
 descendant::tr
@@ -65,7 +65,7 @@ descendant::tr
   ]
 ```
 
-Sonnar API:
+#### Sonnar API
 
 ```js
 import {fn, select} from 'sonnar';
@@ -87,6 +87,87 @@ const {expression} = select('descendant', 'tr')
 expect(expression).toBe(
   'descendant::tr[contains(attribute::class, "athing")][following-sibling::tr[position() = 1] / child::td[2] / child::a[last()][substring-before(child::text(), "\u00A0") > 50]]'
 );
+```
+
+## Type definitions
+
+### NodeSet
+
+```ts
+class NodeSet extends Primitive {
+  static root(): NodeSet;
+  static select(axisName: AxisName): NodeTest;
+  static select(axisName: AxisName, nodeName: string): NodeSet;
+
+  filter(predicate: Literal | Primitive): this;
+  select(axisName: AxisName): NodeTest;
+  select(axisName: AxisName, nodeName: string): this;
+  union(operand: NodeSet): this;
+}
+```
+
+### AxisName
+
+```ts
+type AxisName =
+  | 'ancestor-or-self'
+  | 'ancestor'
+  | 'attribute'
+  | 'child'
+  | 'descendant-or-self'
+  | 'descendant'
+  | 'following-sibling'
+  | 'following'
+  | 'namespace'
+  | 'parent'
+  | 'preceding-sibling'
+  | 'preceding'
+  | 'self';
+```
+
+### NodeTest
+
+```ts
+class NodeTest {
+  comment(): NodeSet;
+  node(): NodeSet;
+  processingInstruction(targetName?: string): NodeSet;
+  text(): NodeSet;
+}
+```
+
+### Primitive
+
+```ts
+class Primitive {
+  static literal<TValue extends Literal | Primitive>(
+    value: TValue
+  ): TValue extends Literal ? Primitive : TValue;
+
+  readonly expression: string;
+
+  enclose(): this;
+  or(operand: Literal | Primitive): this;
+  and(operand: Literal | Primitive): this;
+  is(operator: ComparisonOperator, operand: Literal | Primitive): this;
+  add(operand: Literal | Primitive): this;
+  subtract(operand: Literal | Primitive): this;
+  multiply(operand: Literal | Primitive): this;
+  divide(operand: Literal | Primitive): this;
+  mod(operand: Literal | Primitive): this;
+}
+```
+
+### Literal
+
+```ts
+type Literal = boolean | number | string;
+```
+
+### ComparisonOperator
+
+```ts
+type ComparisonOperator = '=' | '!=' | '<' | '<=' | '>' | '>=';
 ```
 
 ---
