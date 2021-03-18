@@ -3,36 +3,36 @@ import {Literal, Primitive} from './primitive';
 
 /* Node Set Functions *********************************************************/
 
-/** number last() */
+/** `number last()` */
 export function fn(functionName: 'last'): Primitive;
 
-/** number position() */
+/** `number position()` */
 export function fn(functionName: 'position'): Primitive;
 
-/** number count(node-set) */
+/** `number count(node-set)` */
 export function fn(functionName: 'count', arg: NodeSet): Primitive;
 
-/** node-set id(object) */
+/** `node-set id(object)` */
 export function fn(functionName: 'id', arg: Literal | Primitive): NodeSet;
 
-/** string local-name(node-set?) */
+/** `string local-name(node-set?)` */
 export function fn(functionName: 'local-name', arg?: NodeSet): Primitive;
 
-/** string namespace-uri(node-set?) */
+/** `string namespace-uri(node-set?)` */
 export function fn(functionName: 'namespace-uri', arg?: NodeSet): Primitive;
 
-/** string name(node-set?) */
+/** `string name(node-set?)` */
 export function fn(functionName: 'name', arg?: NodeSet): Primitive;
 
 /* String Functions ***********************************************************/
 
-/** string string(object?) */
+/** `string string(object?)` */
 export function fn(
   functionName: 'string',
   arg?: Literal | Primitive
 ): Primitive;
 
-/** string concat(string, string, string*) */
+/** `string concat(string, string, string*)` */
 export function fn(
   functionName: 'concat',
   arg1: Literal | Primitive,
@@ -40,35 +40,35 @@ export function fn(
   ...otherArgs: (Literal | Primitive)[]
 ): Primitive;
 
-/** boolean starts-with(string, string) */
+/** `boolean starts-with(string, string)` */
 export function fn(
   functionName: 'starts-with',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive
 ): Primitive;
 
-/** boolean contains(string, string) */
+/** `boolean contains(string, string)` */
 export function fn(
   functionName: 'contains',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive
 ): Primitive;
 
-/** string substring-before(string, string) */
+/** `string substring-before(string, string)` */
 export function fn(
   functionName: 'substring-before',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive
 ): Primitive;
 
-/** string substring-after(string, string) */
+/** `string substring-after(string, string)` */
 export function fn(
   functionName: 'substring-after',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive
 ): Primitive;
 
-/** string substring(string, number, number?) */
+/** `string substring(string, number, number?)` */
 export function fn(
   functionName: 'substring',
   arg1: Literal | Primitive,
@@ -76,19 +76,19 @@ export function fn(
   arg3?: Literal | Primitive
 ): Primitive;
 
-/** number string-length(string?) */
+/** `number string-length(string?)` */
 export function fn(
   functionName: 'string-length',
   arg?: Literal | Primitive
 ): Primitive;
 
-/** string normalize-space(string?) */
+/** `string normalize-space(string?)` */
 export function fn(
   functionName: 'normalize-space',
   arg?: Literal | Primitive
 ): Primitive;
 
-/** string translate(string, string, string) */
+/** `string translate(string, string, string)` */
 export function fn(
   functionName: 'translate',
   arg1: Literal | Primitive,
@@ -98,39 +98,39 @@ export function fn(
 
 /* Boolean Functions **********************************************************/
 
-/** boolean boolean(object) */
+/** `boolean boolean(object)` */
 export function fn(
   functionName: 'boolean',
   arg: Literal | Primitive
 ): Primitive;
 
-/** boolean not(boolean) */
+/** `boolean not(boolean)` */
 export function fn(functionName: 'not', arg: Literal | Primitive): Primitive;
 
-/** boolean lang(string) */
+/** `boolean lang(string)` */
 export function fn(functionName: 'lang', arg: Literal | Primitive): Primitive;
 
 /* Number Functions ***********************************************************/
 
-/** number number(object?) */
+/** `number number(object?)` */
 export function fn(
   functionName: 'number',
   arg?: Literal | Primitive
 ): Primitive;
 
-/** number sum(node-set) */
+/** `number sum(node-set)` */
 export function fn(functionName: 'sum', arg: NodeSet): Primitive;
 
-/** number floor(number) */
+/** `number floor(number)` */
 export function fn(functionName: 'floor', arg: Literal | Primitive): Primitive;
 
-/** number ceiling(number) */
+/** `number ceiling(number)` */
 export function fn(
   functionName: 'ceiling',
   arg: Literal | Primitive
 ): Primitive;
 
-/** number round(number) */
+/** `number round(number)` */
 export function fn(functionName: 'round', arg: Literal | Primitive): Primitive;
 
 /******************************************************************************/
