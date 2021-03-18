@@ -18,13 +18,25 @@
 A lightweight TypeScript API for constructing
 [ XPath 1.0](https://www.w3.org/TR/1999/REC-xpath-19991116/) expressions.
 
-## Installation
+## Contents
 
-```
-npm install sonnar
-```
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Usage examples](#usage-examples)
+  - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
+- [Type definitions](#type-definitions)
+  - [`NodeSet`](#nodeset)
+  - [`AxisName`](#axisname)
+  - [`NodeTest`](#nodetest)
+  - [`Primitive`](#primitive)
+  - [`Literal`](#literal)
+  - [`ComparisonOperator`](#comparisonoperator)
+  - [Node Set Functions](#node-set-functions)
+  - [String Functions](#string-functions)
+  - [Boolean Functions](#boolean-functions)
+  - [Number Functions](#number-functions)
 
-## Motivation
+## Introduction
 
 Although XPath 1.0 is a very elegant and powerful language, the syntax and DEV
 experience is suboptimal to say the least. Typically, an XPath 1.0 expression is
@@ -32,6 +44,12 @@ written as a JavaScript string. This means there is no IntelliSense support, no
 syntax highlighting, and you quickly get lost in the parentheses. That's why I
 developed a lightweight TypeScript API around XPath 1.0 that's just as powerful,
 but doesn't have the above problems.
+
+## Installation
+
+```
+npm install sonnar
+```
 
 ## Usage examples
 
@@ -91,7 +109,7 @@ expect(expression).toBe(
 
 ## Type definitions
 
-### NodeSet
+### `NodeSet`
 
 ```ts
 class NodeSet extends Primitive {
@@ -106,7 +124,7 @@ class NodeSet extends Primitive {
 }
 ```
 
-### AxisName
+### `AxisName`
 
 ```ts
 type AxisName =
@@ -125,7 +143,7 @@ type AxisName =
   | 'self';
 ```
 
-### NodeTest
+### `NodeTest`
 
 ```ts
 class NodeTest {
@@ -136,7 +154,7 @@ class NodeTest {
 }
 ```
 
-### Primitive
+### `Primitive`
 
 ```ts
 class Primitive {
@@ -158,16 +176,186 @@ class Primitive {
 }
 ```
 
-### Literal
+### `Literal`
 
 ```ts
 type Literal = boolean | number | string;
 ```
 
-### ComparisonOperator
+### `ComparisonOperator`
 
 ```ts
 type ComparisonOperator = '=' | '!=' | '<' | '<=' | '>' | '>=';
+```
+
+### Node Set Functions
+
+```ts
+/** `number last()` */
+function fn(functionName: 'last'): Primitive;
+```
+
+```ts
+/** `number position()` */
+function fn(functionName: 'position'): Primitive;
+```
+
+```ts
+/** `number count(node-set)` */
+function fn(functionName: 'count', arg: NodeSet): Primitive;
+```
+
+```ts
+/** `node-set id(object)` */
+function fn(functionName: 'id', arg: Literal | Primitive): NodeSet;
+```
+
+```ts
+/** `string local-name(node-set?)` */
+function fn(functionName: 'local-name', arg?: NodeSet): Primitive;
+```
+
+```ts
+/** `string namespace-uri(node-set?)` */
+function fn(functionName: 'namespace-uri', arg?: NodeSet): Primitive;
+```
+
+```ts
+/** `string name(node-set?)` */
+function fn(functionName: 'name', arg?: NodeSet): Primitive;
+```
+
+### String Functions
+
+```ts
+/** `string string(object?)` */
+function fn(functionName: 'string', arg?: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `string concat(string, string, string*)` */
+function fn(
+  functionName: 'concat',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive,
+  ...otherArgs: (Literal | Primitive)[]
+): Primitive;
+```
+
+```ts
+/** `boolean starts-with(string, string)` */
+function fn(
+  functionName: 'starts-with',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `boolean contains(string, string)` */
+function fn(
+  functionName: 'contains',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `string substring-before(string, string)` */
+function fn(
+  functionName: 'substring-before',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `string substring-after(string, string)` */
+function fn(
+  functionName: 'substring-after',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `string substring(string, number, number?)` */
+function fn(
+  functionName: 'substring',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive,
+  arg3?: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `number string-length(string?)` */
+function fn(
+  functionName: 'string-length',
+  arg?: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `string normalize-space(string?)` */
+function fn(
+  functionName: 'normalize-space',
+  arg?: Literal | Primitive
+): Primitive;
+```
+
+```ts
+/** `string translate(string, string, string)` */
+function fn(
+  functionName: 'translate',
+  arg1: Literal | Primitive,
+  arg2: Literal | Primitive,
+  arg3: Literal | Primitive
+): Primitive;
+```
+
+### Boolean Functions
+
+```ts
+/** `boolean boolean(object)` */
+function fn(functionName: 'boolean', arg: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `boolean not(boolean)` */
+function fn(functionName: 'not', arg: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `boolean lang(string)` */
+function fn(functionName: 'lang', arg: Literal | Primitive): Primitive;
+```
+
+### Number Functions
+
+```ts
+/** `number number(object?)` */
+function fn(functionName: 'number', arg?: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `number sum(node-set)` */
+function fn(functionName: 'sum', arg: NodeSet): Primitive;
+```
+
+```ts
+/** `number floor(number)` */
+function fn(functionName: 'floor', arg: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `number ceiling(number)` */
+function fn(functionName: 'ceiling', arg: Literal | Primitive): Primitive;
+```
+
+```ts
+/** `number round(number)` */
+function fn(functionName: 'round', arg: Literal | Primitive): Primitive;
 ```
 
 ---
