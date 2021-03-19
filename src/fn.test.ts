@@ -1,4 +1,4 @@
-import {NodeSet, Primitive, fn, root} from '.';
+import {NodeSet, Primitive, fn} from '.';
 
 test('fn()', () => {
   const last = fn('last');
@@ -13,7 +13,7 @@ test('fn()', () => {
   expect(position).not.toBeInstanceOf(NodeSet);
   expect(position.expression).toBe('position()');
 
-  const count = fn('count', root());
+  const count = fn('count', NodeSet.root());
 
   expect(count).toBeInstanceOf(Primitive);
   expect(count).not.toBeInstanceOf(NodeSet);
@@ -25,7 +25,7 @@ test('fn()', () => {
   expect(id.expression).toBe('id("0")');
 
   const localName1 = fn('local-name');
-  const localName2 = fn('local-name', root());
+  const localName2 = fn('local-name', NodeSet.root());
 
   expect(localName1).toBeInstanceOf(Primitive);
   expect(localName1).not.toBeInstanceOf(NodeSet);
@@ -33,7 +33,7 @@ test('fn()', () => {
   expect(localName2.expression).toBe('local-name(/)');
 
   const namespaceURI1 = fn('namespace-uri');
-  const namespaceURI2 = fn('namespace-uri', root());
+  const namespaceURI2 = fn('namespace-uri', NodeSet.root());
 
   expect(namespaceURI1).toBeInstanceOf(Primitive);
   expect(namespaceURI1).not.toBeInstanceOf(NodeSet);
@@ -41,7 +41,7 @@ test('fn()', () => {
   expect(namespaceURI2.expression).toBe('namespace-uri(/)');
 
   const name1 = fn('name');
-  const name2 = fn('name', root());
+  const name2 = fn('name', NodeSet.root());
 
   expect(name1).toBeInstanceOf(Primitive);
   expect(name1).not.toBeInstanceOf(NodeSet);
@@ -144,7 +144,7 @@ test('fn()', () => {
   expect(number1.expression).toBe('number()');
   expect(number2.expression).toBe('number("0")');
 
-  const sum = fn('sum', root());
+  const sum = fn('sum', NodeSet.root());
 
   expect(sum).toBeInstanceOf(Primitive);
   expect(sum).not.toBeInstanceOf(NodeSet);

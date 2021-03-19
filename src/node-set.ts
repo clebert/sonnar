@@ -1,56 +1,91 @@
-import {NodeTest} from './node-test';
+import {fn} from './fn';
 import {Literal, Primitive} from './primitive';
 
 export type AxisName =
   | 'ancestor-or-self'
   | 'ancestor'
-  | 'attribute'
   | 'child'
   | 'descendant-or-self'
   | 'descendant'
   | 'following-sibling'
   | 'following'
-  | 'namespace'
   | 'parent'
   | 'preceding-sibling'
   | 'preceding'
   | 'self';
 
 export class NodeSet extends Primitive {
+  static attribute(attributeName: string): NodeSet {
+    if (attributeName.startsWith('.')) {
+      return NodeSet.attribute('class').filter(
+        fn(
+          'contains',
+          fn('concat', ' ', fn('normalize-space', NodeSet.node('self')), ' '),
+          ` ${attributeName.slice(1)} `
+        )
+      );
+    }
+
+    if (attributeName.startsWith('#')) {
+      return NodeSet.attribute('id').filter(
+        NodeSet.node('self').is('=', attributeName.slice(1))
+      );
+    }
+
+    return new NodeSet(`attribute::${attributeName}`);
+  }
+
+  static comment(axisName: AxisName = 'child'): NodeSet {
+    return new NodeSet(`${axisName}::comment()`);
+  }
+
+  static element(elementName: string, axisName: AxisName = 'child'): NodeSet {
+    return new NodeSet(`${axisName}::${elementName}`);
+  }
+
+  static namespace(namespaceName: string): NodeSet {
+    return new NodeSet(`namespace::${namespaceName}`);
+  }
+
+  static node(axisName: AxisName = 'child'): NodeSet {
+    return new NodeSet(`${axisName}::node()`);
+  }
+
+  static processingInstruction(
+    axisName: AxisName = 'child',
+    targetName: string = ''
+  ): NodeSet {
+    return new NodeSet(`${axisName}::processing-instruction(${targetName})`);
+  }
+
   static root(): NodeSet {
     return new NodeSet('/');
   }
 
-  static select(axisName: AxisName): NodeTest;
-  static select(axisName: AxisName, nodeName: string): NodeSet;
-
-  static select(axisName: AxisName, nodeName?: string): NodeSet | NodeTest {
-    const prefix = `${axisName}::`;
-
-    return nodeName ? new NodeSet(prefix + nodeName) : new NodeTest(prefix);
+  static text(axisName: AxisName = 'child'): NodeSet {
+    return new NodeSet(`${axisName}::text()`);
   }
 
-  protected createInstance(expression: string): this {
-    return new NodeSet(expression) as this;
-  }
-
-  filter(predicate: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression}[${Primitive.literal(predicate).expression}]`
+  filter(predicate: Literal | Primitive): NodeSet {
+    return new NodeSet(
+      `${this.expression}[${
+        (Primitive.isLiteral(predicate)
+          ? Primitive.literal(predicate)
+          : predicate
+        ).expression
+      }]`
     );
   }
 
-  path(operand: NodeSet): this {
-    const delimiter = this.expression === '/' ? ' ' : ' / ';
-
-    return this.createInstance(
-      `${this.expression}${delimiter}${operand.expression}`
+  path(operand: NodeSet): NodeSet {
+    return new NodeSet(
+      `${this.expression === '/' ? '/' : `${this.expression} /`} ${
+        operand.expression
+      }`
     );
   }
 
-  union(operand: NodeSet): this {
-    return this.createInstance(
-      `${this.expression} | ${Primitive.literal(operand).expression}`
-    );
+  union(operand: NodeSet): NodeSet {
+    return new NodeSet(`${this.expression} | ${operand.expression}`);
   }
 }

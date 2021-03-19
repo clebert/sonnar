@@ -2,80 +2,67 @@ export type Literal = boolean | number | string;
 export type ComparisonOperator = '=' | '!=' | '<' | '<=' | '>' | '>=';
 
 export class Primitive {
-  static literal<TValue extends Literal | Primitive>(
-    value: TValue
-  ): TValue extends Literal ? Primitive : TValue;
-
-  static literal(value: Literal | Primitive): Primitive {
+  static isLiteral(value: unknown): value is Literal {
     switch (typeof value) {
       case 'boolean':
-        return new Primitive(value ? 'true()' : 'false()');
       case 'number':
-        return new Primitive(String(value));
       case 'string':
-        return new Primitive(JSON.stringify(value));
+        return true;
     }
 
-    return value;
+    return false;
+  }
+
+  static literal(value: Literal): Primitive {
+    return new Primitive(
+      typeof value === 'boolean'
+        ? value
+          ? 'true()'
+          : 'false()'
+        : JSON.stringify(value)
+    );
   }
 
   constructor(readonly expression: string) {}
 
-  protected createInstance(expression: string): this {
-    return new Primitive(expression) as this;
+  and(operand: Literal | Primitive): Primitive {
+    return this.#operation('and', operand);
   }
 
-  enclose(): this {
-    return /^\(.*\)$/.test(this.expression)
-      ? this
-      : this.createInstance(`(${this.expression})`);
+  or(operand: Literal | Primitive): Primitive {
+    return this.#operation('or', operand);
   }
 
-  or(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} or ${Primitive.literal(operand).expression}`
+  is(operator: ComparisonOperator, operand: Literal | Primitive): Primitive {
+    return this.#operation(operator, operand);
+  }
+
+  add(operand: Literal | Primitive): Primitive {
+    return this.#operation('+', operand);
+  }
+
+  subtract(operand: Literal | Primitive): Primitive {
+    return this.#operation('-', operand);
+  }
+
+  multiply(operand: Literal | Primitive): Primitive {
+    return this.#operation('*', operand);
+  }
+
+  divide(operand: Literal | Primitive): Primitive {
+    return this.#operation('div', operand);
+  }
+
+  mod(operand: Literal | Primitive): Primitive {
+    return this.#operation('mod', operand);
+  }
+
+  readonly #operation = (operator: string, operand: Literal | Primitive) => {
+    return new Primitive(
+      `(${this.expression} ${operator} ${
+        (Primitive.isLiteral(operand) ? Primitive.literal(operand) : operand)
+          .expression
+      })`
     );
-  }
-
-  and(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} and ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  is(operator: ComparisonOperator, operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} ${operator} ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  add(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} + ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  subtract(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} - ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  multiply(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} * ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  divide(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} div ${Primitive.literal(operand).expression}`
-    );
-  }
-
-  mod(operand: Literal | Primitive): this {
-    return this.createInstance(
-      `${this.expression} mod ${Primitive.literal(operand).expression}`
-    );
-  }
+  };
 }

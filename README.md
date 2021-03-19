@@ -24,13 +24,12 @@ A lightweight TypeScript API for constructing
 - [Installation](#installation)
 - [Usage examples](#usage-examples)
   - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
-  - [Group using parentheses](#group-using-parentheses)
-  - [Select the document root](#select-the-document-root)
-  - [Use a literal as the left-hand side of an expression](#use-a-literal-as-the-left-hand-side-of-an-expression)
+  - [Select a set of nodes](#select-a-set-of-nodes)
+  - [Select attributes by their class or ID](#select-attributes-by-their-class-or-id)
+  - [Automatic setting of parentheses](#automatic-setting-of-parentheses)
 - [API documentation](#api-documentation)
   - [`NodeSet`](#nodeset)
   - [`AxisName`](#axisname)
-  - [`NodeTest`](#nodetest)
   - [`Primitive`](#primitive)
   - [`Literal`](#literal)
   - [`ComparisonOperator`](#comparisonoperator)
@@ -43,7 +42,7 @@ A lightweight TypeScript API for constructing
 ## Introduction
 
 Although XPath 1.0 is a very elegant and powerful language, the syntax and DEV
-experience is suboptimal to say the least. Typically, an XPath 1.0 expression is
+experience is suboptimal to say the least. Typically, an XPath expression is
 written as a JavaScript string. This means there is no IntelliSense support, no
 syntax highlighting, and you quickly get lost in the parentheses. That's why I
 developed a lightweight TypeScript API around XPath 1.0 that's just as powerful,
@@ -63,7 +62,7 @@ npm install sonnar
 
 ```
 // tr
-  [contains(@class, "athing")]
+  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]
   [
     following-sibling::tr[1]
     / td[2]
@@ -77,7 +76,7 @@ npm install sonnar
 
 ```
 descendant::tr
-  [contains(attribute::class, "athing")]
+  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]
   [
     following-sibling::tr[position() = 1]
     / child::td[position() = 2]
@@ -90,63 +89,221 @@ descendant::tr
 #### Sonnar API
 
 ```js
-import {fn, select} from 'sonnar';
+import {NodeSet, fn} from 'sonnar';
 
-const {expression} = select('descendant', 'tr')
-  .filter(fn('contains', select('attribute', 'class'), 'athing'))
+const {attribute, element, text} = NodeSet;
+
+const {expression} = element('tr', 'descendant')
+  .filter(attribute('.athing'))
   .filter(
-    select('following-sibling', 'tr')
+    element('tr', 'following-sibling')
       .filter(fn('position').is('=', 1)) // less verbose alternative: .filter(1)
-      .path(select('child', 'td'))
+      .path(element('td'))
       .filter(2)
-      .path(select('child', 'a'))
+      .path(element('a'))
       .filter(fn('last'))
-      .filter(
-        fn('substring-before', select('child').text(), '\u00A0').is('>', 50)
-      )
+      .filter(fn('substring-before', text(), '\u00A0').is('>', 50))
   );
 
 expect(expression).toBe(
-  'descendant::tr[contains(attribute::class, "athing")][following-sibling::tr[position() = 1] / child::td[2] / child::a[last()][substring-before(child::text(), "\u00A0") > 50]]'
+  'descendant::tr[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
 );
 ```
 
-### Group using parentheses
+### Select a set of nodes
 
-The meaning of a predicate depends crucially on which axis applies. For example,
-`preceding::foo[1]` returns the first `foo` element in reverse document order,
-because the axis that applies to the `[1]` predicate is the preceding axis.
+The following is a list of examples taken from the official W3C specification
+document.
 
-```ts
-import {select} from 'sonnar';
-
-select('preceding', 'foo').filter(1);
-```
-
-By contrast, `(preceding::foo)[1]` returns the first `foo` element in document
-order, because the axis that applies to the `[1]` predicate is the child axis.
+<details>
+  <summary>Show the examples</summary>
 
 ```ts
-select('preceding', 'foo').enclose().filter(1);
+import {NodeSet, fn} from 'sonnar';
+
+// selects the para element children of the context node
+NodeSet.element('para');
+
+// selects all element children of the context node
+NodeSet.element('*');
+
+// selects all text node children of the context node
+NodeSet.text();
+
+// selects all the children of the context node, whatever their node type
+NodeSet.node();
+
+// selects the name attribute of the context node
+NodeSet.attribute('name');
+
+// selects all the attributes of the context node
+NodeSet.attribute('*');
+
+// selects the para element descendants of the context node
+NodeSet.element('para', 'descendant');
+
+// selects all div ancestors of the context node
+NodeSet.element('div', 'ancestor');
+
+// selects the div ancestors of the context node and, if the context node is a div element, the context node as well
+NodeSet.element('div', 'ancestor-or-self');
+
+// selects the para element descendants of the context node and, if the context node is a para element, the context node as well
+NodeSet.element('para', 'descendant-or-self');
+
+// selects the context node if it is a para element, and otherwise selects nothing
+NodeSet.element('para', 'self');
+
+// selects the para element descendants of the chapter element children of the context node
+NodeSet.element('chapter').path(NodeSet.element('para', 'descendant'));
+
+// selects all para grandchildren of the context node
+NodeSet.element('*').path(NodeSet.element('para'));
+
+// selects the document root (which is always the parent of the document element)
+NodeSet.root();
+
+// selects all the para elements in the same document as the context node
+NodeSet.root().path(NodeSet.element('para', 'descendant'));
+
+// selects all the item elements that have an olist parent and that are in the same document as the context node
+NodeSet.root()
+  .path(NodeSet.element('olist', 'descendant'))
+  .path(NodeSet.element('item'));
+
+// selects the first para child of the context node
+NodeSet.element('para').filter(fn('position').is('=', 1));
+
+// selects the last para child of the context node
+NodeSet.element('para').filter(fn('position').is('=', fn('last')));
+
+// selects the last but one para child of the context node
+NodeSet.element('para').filter(fn('position').is('=', fn('last').subtract(1)));
+
+// selects all the para children of the context node other than the first para child of the context node
+NodeSet.element('para').filter(fn('position').is('>', 1));
+
+// selects the next chapter sibling of the context node
+NodeSet.element('chapter', 'following-sibling').filter(
+  fn('position').is('=', 1)
+);
+
+// selects the previous chapter sibling of the context node
+NodeSet.element('chapter', 'preceding-sibling').filter(
+  fn('position').is('=', 1)
+);
+
+// selects the forty-second figure element in the document
+NodeSet.root()
+  .path(NodeSet.element('figure', 'descendant'))
+  .filter(fn('position').is('=', 42));
+
+// selects the second section of the fifth chapter of the doc document element
+NodeSet.root()
+  .path(NodeSet.element('doc'))
+  .path(NodeSet.element('chapter'))
+  .filter(fn('position').is('=', 5))
+  .path(NodeSet.element('section'))
+  .filter(fn('position').is('=', 2));
+
+// selects all para children of the context node that have a type attribute with value warning
+NodeSet.element('para').filter(NodeSet.attribute('type').is('=', 'warning'));
+
+// selects the fifth para child of the context node that has a type attribute with value warning
+NodeSet.element('para')
+  .filter(NodeSet.attribute('type').is('=', 'warning'))
+  .filter(fn('position').is('=', 5));
+
+// selects the fifth para child of the context node if that child has a type attribute with value warning
+NodeSet.element('para')
+  .filter(fn('position').is('=', 5))
+  .filter(NodeSet.attribute('type').is('=', 'warning'));
+
+// selects the chapter children of the context node that have one or more title children with string-value equal to Introduction
+NodeSet.element('chapter').filter(
+  NodeSet.element('title').is('=', 'Introduction')
+);
+
+// selects the chapter children of the context node that have one or more title children
+NodeSet.element('chapter').filter(NodeSet.element('title'));
+
+// selects the chapter and appendix children of the context node
+NodeSet.element('*').filter(
+  NodeSet.element('chapter', 'self').or(NodeSet.element('appendix', 'self'))
+);
+
+// selects the last chapter or appendix child of the context node
+NodeSet.element('*')
+  .filter(
+    NodeSet.element('chapter', 'self').or(NodeSet.element('appendix', 'self'))
+  )
+  .filter(fn('position').is('=', fn('last')));
 ```
 
-### Select the document root
+</details>
 
-The `/` document root is always the parent of the document element.
+### Select attributes by their class or ID
+
+Since this library is mainly used in the context of the DOM, it provides a
+convenient way to select attributes based on their class or ID using the same
+syntax as CSS class or ID selectors.
 
 ```ts
-import {root} from 'sonnar';
+import {NodeSet} from 'sonnar';
 
-root();
+// selects the class attribute of the context node that contains the value foo
+NodeSet.attribute('.foo');
+
+// selects the id attribute of the context node that has the value foo
+NodeSet.attribute('#foo');
 ```
 
-### Use a literal as the left-hand side of an expression
+### Automatic setting of parentheses
+
+The expression of an operation which results in a primitive is automatically
+enclosed in parentheses.
+
+<details>
+  <summary>Show the affected methods</summary>
+
+- `Primitive.and()`
+- `Primitive.or()`
+- `Primitive.is()`
+- `Primitive.add()`
+- `Primitive.subtract()`
+- `Primitive.multiply()`
+- `Primitive.divide()`
+- `Primitive.mod()`
+
+</details>
 
 ```ts
-import {literal} from 'sonnar';
+import {Primitive} from 'sonnar';
 
-literal(1).add(2).enclose().is('=', 3);
+// (((3 + 3) * 7) = 42)
+Primitive.literal(3).add(3).multiply(7).is('=', 42);
+
+// (((7 * 3) + 3) != 42)
+Primitive.literal(7).multiply(3).add(3).is('!=', 42);
+
+// ((7 * (3 + 3)) = 42)
+Primitive.literal(7).multiply(Primitive.literal(3).add(3)).is('=', 42);
 ```
+
+Since the syntax of XPath 1.0 does not allow the right part of a path expression
+to be enclosed in parentheses, the expression of an operation which results in a
+node-set is **not** automatically enclosed in parentheses. Thus, for example,
+the following expression `(preceding::foo)[1]` cannot be constructed with
+Sonnar.
+
+<details>
+  <summary>Show the affected methods</summary>
+
+- `NodeSet.filter()`
+- `NodeSet.path()`
+- `NodeSet.union()`
+
+</details>
 
 ## API documentation
 
@@ -158,21 +315,24 @@ import {NodeSet} from 'sonnar';
 
 ```ts
 class NodeSet extends Primitive {
+  static attribute(attributeName: string): NodeSet;
+  static comment(axisName?: AxisName): NodeSet;
+  static element(elementName: string, axisName?: AxisName): NodeSet;
+  static namespace(namespaceName: string): NodeSet;
+  static node(axisName?: AxisName): NodeSet;
+
+  static processingInstruction(
+    axisName?: AxisName,
+    targetName?: string
+  ): NodeSet;
+
   static root(): NodeSet;
-  static select(axisName: AxisName): NodeTest;
-  static select(axisName: AxisName, nodeName: string): NodeSet;
+  static text(axisName?: AxisName): NodeSet;
 
-  filter(predicate: Literal | Primitive): this;
-  path(operand: NodeSet): this;
-  union(operand: NodeSet): this;
+  filter(predicate: Literal | Primitive): NodeSet;
+  path(operand: NodeSet): NodeSet;
+  union(operand: NodeSet): NodeSet;
 }
-```
-
-**Note:** For more convenient use, the `NodeSet.root` and `NodeSet.select`
-functions are exported directly from the top level module.
-
-```ts
-import {root, select} from 'sonnar';
 ```
 
 ### `AxisName`
@@ -181,32 +341,15 @@ import {root, select} from 'sonnar';
 type AxisName =
   | 'ancestor-or-self'
   | 'ancestor'
-  | 'attribute'
   | 'child'
   | 'descendant-or-self'
   | 'descendant'
   | 'following-sibling'
   | 'following'
-  | 'namespace'
   | 'parent'
   | 'preceding-sibling'
   | 'preceding'
   | 'self';
-```
-
-### `NodeTest`
-
-```ts
-import {NodeTest} from 'sonnar';
-```
-
-```ts
-class NodeTest {
-  comment(): NodeSet;
-  node(): NodeSet;
-  processingInstruction(targetName?: string): NodeSet;
-  text(): NodeSet;
-}
 ```
 
 ### `Primitive`
@@ -217,29 +360,20 @@ import {Primitive} from 'sonnar';
 
 ```ts
 class Primitive {
-  static literal<TValue extends Literal | Primitive>(
-    value: TValue
-  ): TValue extends Literal ? Primitive : TValue;
+  static isLiteral(value: unknown): value is Literal;
+  static literal(value: Literal): Primitive;
 
   readonly expression: string;
 
-  enclose(): this;
-  or(operand: Literal | Primitive): this;
-  and(operand: Literal | Primitive): this;
-  is(operator: ComparisonOperator, operand: Literal | Primitive): this;
-  add(operand: Literal | Primitive): this;
-  subtract(operand: Literal | Primitive): this;
-  multiply(operand: Literal | Primitive): this;
-  divide(operand: Literal | Primitive): this;
-  mod(operand: Literal | Primitive): this;
+  and(operand: Literal | Primitive): Primitive;
+  or(operand: Literal | Primitive): Primitive;
+  is(operator: ComparisonOperator, operand: Literal | Primitive): Primitive;
+  add(operand: Literal | Primitive): Primitive;
+  subtract(operand: Literal | Primitive): Primitive;
+  multiply(operand: Literal | Primitive): Primitive;
+  divide(operand: Literal | Primitive): Primitive;
+  mod(operand: Literal | Primitive): Primitive;
 }
-```
-
-**Note:** For more convenient use, the `Primitive.literal` function is exported
-directly from the top level module.
-
-```ts
-import {literal} from 'sonnar';
 ```
 
 ### `Literal`

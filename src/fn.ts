@@ -141,7 +141,10 @@ export function fn(
 ): Primitive {
   const expression = `${functionName}(${args
     .filter((arg) => arg !== undefined)
-    .map((arg) => Primitive.literal(arg!).expression)
+    .map(
+      (arg) =>
+        (Primitive.isLiteral(arg) ? Primitive.literal(arg) : arg!).expression
+    )
     .join(', ')})`;
 
   return functionName === 'id'
