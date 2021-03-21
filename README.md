@@ -62,7 +62,7 @@ npm install sonnar
 
 ```
 // tr
-  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]
+  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
   [
     following-sibling::tr[1]
     / td[2]
@@ -76,7 +76,7 @@ npm install sonnar
 
 ```
 descendant::tr
-  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]
+  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
   [
     following-sibling::tr[position() = 1]
     / child::td[position() = 2]
