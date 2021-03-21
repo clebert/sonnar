@@ -1,6 +1,10 @@
 import {NodeSet} from '.';
 
 describe('NodeSet', () => {
+  test('static any()', () => {
+    expect(NodeSet.any().expression).toBe('descendant-or-self::node()');
+  });
+
   test('static attribute()', () => {
     expect(
       [

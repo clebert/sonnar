@@ -315,19 +315,23 @@ import {NodeSet} from 'sonnar';
 
 ```ts
 class NodeSet extends Primitive {
+  /**
+   * Shortcut for `NodeSet.node('descendant-or-self')`
+   */
+  static any(): NodeSet;
   static attribute(attributeName: string): NodeSet;
-  static comment(axisName?: AxisName): NodeSet;
-  static element(elementName: string, axisName?: AxisName): NodeSet;
+  static comment(axisName: AxisName = 'child'): NodeSet;
+  static element(elementName: string, axisName: AxisName = 'child'): NodeSet;
   static namespace(namespaceName: string): NodeSet;
-  static node(axisName?: AxisName): NodeSet;
+  static node(axisName: AxisName = 'child'): NodeSet;
 
   static processingInstruction(
-    axisName?: AxisName,
+    axisName: AxisName = 'child',
     targetName?: string
   ): NodeSet;
 
   static root(): NodeSet;
-  static text(axisName?: AxisName): NodeSet;
+  static text(axisName: AxisName = 'child'): NodeSet;
 
   filter(predicate: Literal | Primitive): NodeSet;
   path(operand: NodeSet): NodeSet;

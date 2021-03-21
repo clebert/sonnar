@@ -15,6 +15,13 @@ export type AxisName =
   | 'self';
 
 export class NodeSet extends Primitive {
+  /**
+   * Shortcut for `NodeSet.node('descendant-or-self')`
+   */
+  static any(): NodeSet {
+    return NodeSet.node('descendant-or-self');
+  }
+
   static attribute(attributeName: string): NodeSet {
     if (attributeName.startsWith('.')) {
       return NodeSet.attribute('class').filter(
