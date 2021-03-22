@@ -58,36 +58,6 @@ npm install sonnar
 
 ### Find all [HackerNews](https://news.ycombinator.com) posts which have more than 50 comments
 
-#### XPath 1.0 abbreviated syntax
-
-```
-// tr
-  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
-  [
-    following-sibling::tr[1]
-    / td[2]
-    / a
-      [last()]
-      [substring-before(text(), " ") > 50]
-  ]
-```
-
-#### XPath 1.0 verbose syntax
-
-```
-descendant::tr
-  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
-  [
-    following-sibling::tr[position() = 1]
-    / child::td[position() = 2]
-    / child::a
-      [position() = last()]
-      [substring-before(child::text(), " ") > 50]
-  ]
-```
-
-#### Sonnar API
-
 ```js
 import {NodeSet, fn} from 'sonnar';
 
@@ -109,6 +79,40 @@ expect(expression).toBe(
   'descendant::tr[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
 );
 ```
+
+<details>
+  <summary>XPath 1.0 abbreviated syntax</summary>
+
+```
+// tr
+  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
+  [
+    following-sibling::tr[1]
+    / td[2]
+    / a
+      [last()]
+      [substring-before(text(), " ") > 50]
+  ]
+```
+
+</details>
+
+<details>
+  <summary>XPath 1.0 verbose syntax</summary>
+
+```
+descendant::tr
+  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
+  [
+    following-sibling::tr[position() = 1]
+    / child::td[position() = 2]
+    / child::a
+      [position() = last()]
+      [substring-before(child::text(), " ") > 50]
+  ]
+```
+
+</details>
 
 ### Select a set of nodes
 
