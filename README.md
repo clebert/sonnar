@@ -15,8 +15,12 @@
 [size-badge]: https://badgen.net/bundlephobia/minzip/sonnar
 [size-link]: https://bundlephobia.com/result?p=sonnar
 
-A lightweight TypeScript API for constructing
-[ XPath 1.0](https://www.w3.org/TR/1999/REC-xpath-19991116/) expressions.
+**Do you know [XPath 1.0?](https://www.w3.org/TR/1999/REC-xpath-19991116/)**
+This is basically the powerful sibling of CSS selectors. Built into any browser
+and almost any E2E testing framework, you can write arithmetic queries. Syntax
+is a bit fiddly. That's why I built Sonnar.
+
+> A lightweight TypeScript API for constructing XPath 1.0 expressions.
 
 ## Contents
 
