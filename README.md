@@ -116,8 +116,8 @@ descendant::tr
 
 ### Select a set of nodes
 
-The following is a list of examples taken from the official W3C specification
-document.
+The following is a list of examples taken from the
+[W3C specification document](https://www.w3.org/TR/1999/REC-xpath-19991116/#location-paths).
 
 <details>
   <summary>Show the examples</summary>
