@@ -15,16 +15,18 @@
 [size-badge]: https://badgen.net/bundlephobia/minzip/sonnar
 [size-link]: https://bundlephobia.com/result?p=sonnar
 
-**Do you know [XPath 1.0?](https://www.w3.org/TR/1999/REC-xpath-19991116/)**
-This is basically the powerful sibling of CSS selectors. Built into any browser
-and almost any E2E testing framework, you can write arithmetic queries. Syntax
-is a bit fiddly. That's why I built Sonnar.
+**Do you know [XPath 1.0](https://www.w3.org/TR/1999/REC-xpath-19991116/)?**
+This is basically the more powerful sibling of CSS selectors. Built into almost
+every [browser](https://caniuse.com/document-evaluate-xpath) and E2E testing
+framework. The syntax and thus the DX is a bit cumbersome. Typically, an XPath
+expression is written as a JavaScript string. This means there is no
+IntelliSense support, no syntax highlighting, and you quickly get lost in the
+parentheses. That's why I built Sonnar.
 
 > A lightweight TypeScript API for constructing XPath 1.0 expressions.
 
 ## Contents
 
-- [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage examples](#usage-examples)
   - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
@@ -42,15 +44,6 @@ is a bit fiddly. That's why I built Sonnar.
     - [String functions](#string-functions)
     - [Boolean functions](#boolean-functions)
     - [Number functions](#number-functions)
-
-## Introduction
-
-Although XPath 1.0 is a very elegant and powerful language, the syntax and DEV
-experience is suboptimal to say the least. Typically, an XPath expression is
-written as a JavaScript string. This means there is no IntelliSense support, no
-syntax highlighting, and you quickly get lost in the parentheses. That's why I
-developed a lightweight TypeScript API around XPath 1.0 that's just as powerful,
-but doesn't have the above problems.
 
 ## Installation
 
