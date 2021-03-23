@@ -56,6 +56,11 @@ export class NodeSet extends Primitive {
     return new NodeSet(`${axisName}::node()`);
   }
 
+  /** Shortcut for `NodeSet.node('parent')` */
+  static parent(): NodeSet {
+    return NodeSet.node('parent');
+  }
+
   static processingInstruction(
     axisName: AxisName = 'child',
     targetName: string = ''

@@ -310,6 +310,7 @@ class NodeSet extends Primitive {
   static element(elementName: string, axisName: AxisName = 'child'): NodeSet;
   static namespace(namespaceName: string): NodeSet;
   static node(axisName: AxisName = 'child'): NodeSet;
+  static parent(): NodeSet; // Shortcut for `NodeSet.node('parent')`
 
   static processingInstruction(
     axisName: AxisName = 'child',

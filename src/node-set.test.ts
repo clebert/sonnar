@@ -119,6 +119,10 @@ describe('NodeSet', () => {
     ]);
   });
 
+  test('static parent()', () => {
+    expect(NodeSet.parent().expression).toBe('parent::node()');
+  });
+
   test('static processingInstruction()', () => {
     expect(
       [
