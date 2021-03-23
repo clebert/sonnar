@@ -15,9 +15,7 @@ export type AxisName =
   | 'self';
 
 export class NodeSet extends Primitive {
-  /**
-   * Shortcut for `NodeSet.node('descendant-or-self')`
-   */
+  /** Shortcut for `NodeSet.node('descendant-or-self')` */
   static any(): NodeSet {
     return NodeSet.node('descendant-or-self');
   }
@@ -27,7 +25,7 @@ export class NodeSet extends Primitive {
       return NodeSet.attribute('class').filter(
         fn(
           'contains',
-          fn('concat', ' ', fn('normalize-space', NodeSet.node('self')), ' '),
+          fn('concat', ' ', fn('normalize-space', NodeSet.self()), ' '),
           ` ${attributeName.slice(1)} `
         )
       );
@@ -35,7 +33,7 @@ export class NodeSet extends Primitive {
 
     if (attributeName.startsWith('#')) {
       return NodeSet.attribute('id').filter(
-        NodeSet.node('self').is('=', attributeName.slice(1))
+        NodeSet.self().is('=', attributeName.slice(1))
       );
     }
 
@@ -67,6 +65,11 @@ export class NodeSet extends Primitive {
 
   static root(): NodeSet {
     return new NodeSet('/');
+  }
+
+  /** Shortcut for `NodeSet.node('self')` */
+  static self(): NodeSet {
+    return NodeSet.node('self');
   }
 
   static text(axisName: AxisName = 'child'): NodeSet {

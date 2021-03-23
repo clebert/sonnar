@@ -316,10 +316,7 @@ import {NodeSet} from 'sonnar';
 
 ```ts
 class NodeSet extends Primitive {
-  /**
-   * Shortcut for `NodeSet.node('descendant-or-self')`
-   */
-  static any(): NodeSet;
+  static any(): NodeSet; // Shortcut for `NodeSet.node('descendant-or-self')`
   static attribute(attributeName: string): NodeSet;
   static comment(axisName: AxisName = 'child'): NodeSet;
   static element(elementName: string, axisName: AxisName = 'child'): NodeSet;
@@ -332,6 +329,7 @@ class NodeSet extends Primitive {
   ): NodeSet;
 
   static root(): NodeSet;
+  static self(): NodeSet; // Shortcut for `NodeSet.node('self')`
   static text(axisName: AxisName = 'child'): NodeSet;
 
   filter(predicate: Literal | Primitive): NodeSet;

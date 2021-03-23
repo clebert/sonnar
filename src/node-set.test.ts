@@ -157,6 +157,10 @@ describe('NodeSet', () => {
     expect(NodeSet.root().expression).toBe('/');
   });
 
+  test('static self()', () => {
+    expect(NodeSet.self().expression).toBe('self::node()');
+  });
+
   test('static text()', () => {
     expect(
       [
