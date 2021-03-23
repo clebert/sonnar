@@ -1,18 +1,16 @@
 import {NodeSet, Primitive, fn} from '.';
 
 test('README: Find all HackerNews posts which have more than 50 comments', () => {
-  const {any, attribute, element, text} = NodeSet;
-
-  const {expression} = any()
-    .filter(attribute('.athing'))
+  const {expression} = NodeSet.any()
+    .filter(NodeSet.attribute('.athing'))
     .filter(
-      element('tr', 'following-sibling')
+      NodeSet.element('tr', 'following-sibling')
         .filter(fn('position').is('=', 1)) // less verbose alternative: .filter(1)
-        .path(element('td'))
+        .path(NodeSet.element('td'))
         .filter(2)
-        .path(element('a'))
+        .path(NodeSet.element('a'))
         .filter(fn('last'))
-        .filter(fn('substring-before', text(), '\u00A0').is('>', 50))
+        .filter(fn('substring-before', NodeSet.text(), '\u00A0').is('>', 50))
     );
 
   expect(expression).toBe(
