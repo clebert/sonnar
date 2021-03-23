@@ -58,9 +58,9 @@ npm install sonnar
 ```js
 import {NodeSet, fn} from 'sonnar';
 
-const {attribute, element, text} = NodeSet;
+const {any, attribute, element, text} = NodeSet;
 
-const {expression} = element('tr', 'descendant')
+const {expression} = any()
   .filter(attribute('.athing'))
   .filter(
     element('tr', 'following-sibling')
@@ -73,39 +73,27 @@ const {expression} = element('tr', 'descendant')
   );
 
 expect(expression).toBe(
-  'descendant::tr[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
+  'descendant-or-self::node()[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
 );
 ```
 
 <details>
-  <summary>XPath 1.0 abbreviated syntax</summary>
+  <summary>Show the XPath 1.0 expression</summary>
 
 ```
-// tr
-  [@class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
+descendant-or-self::node()
   [
-    following-sibling::tr[1]
-    / td[2]
-    / a
-      [last()]
-      [substring-before(text(), " ") > 50]
+    attribute::class
+      [contains(concat(" ", normalize-space(self::node()), " "), " athing ")]
   ]
-```
-
-</details>
-
-<details>
-  <summary>XPath 1.0 verbose syntax</summary>
-
-```
-descendant::tr
-  [attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]]
   [
-    following-sibling::tr[position() = 1]
-    / child::td[position() = 2]
+    following-sibling::tr
+      [(position() = 1)]
+    / child::td
+      [2]
     / child::a
-      [position() = last()]
-      [substring-before(child::text(), " ") > 50]
+      [last()]
+      [(substring-before(child::text(), "\u00A0") > 50)]
   ]
 ```
 

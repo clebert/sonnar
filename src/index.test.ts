@@ -1,9 +1,9 @@
 import {NodeSet, Primitive, fn} from '.';
 
 test('README: Find all HackerNews posts which have more than 50 comments', () => {
-  const {attribute, element, text} = NodeSet;
+  const {any, attribute, element, text} = NodeSet;
 
-  const {expression} = element('tr', 'descendant')
+  const {expression} = any()
     .filter(attribute('.athing'))
     .filter(
       element('tr', 'following-sibling')
@@ -16,7 +16,7 @@ test('README: Find all HackerNews posts which have more than 50 comments', () =>
     );
 
   expect(expression).toBe(
-    'descendant::tr[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
+    'descendant-or-self::node()[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
   );
 });
 
