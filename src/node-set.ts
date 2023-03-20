@@ -1,5 +1,6 @@
-import {fn} from './fn';
-import {Literal, Primitive} from './primitive';
+import {fn} from './fn.js';
+import {Primitive} from './primitive.js';
+import type {Literal} from './primitive.js';
 
 export type AxisName =
   | 'ancestor-or-self'
@@ -17,34 +18,34 @@ export type AxisName =
 export class NodeSet extends Primitive {
   /** Shortcut for `NodeSet.node('descendant-or-self')` */
   static any(): NodeSet {
-    return NodeSet.node('descendant-or-self');
+    return NodeSet.node(`descendant-or-self`);
   }
 
   static attribute(attributeName: string): NodeSet {
-    if (attributeName.startsWith('.')) {
-      return NodeSet.attribute('class').filter(
+    if (attributeName.startsWith(`.`)) {
+      return NodeSet.attribute(`class`).filter(
         fn(
-          'contains',
-          fn('concat', ' ', fn('normalize-space', NodeSet.self()), ' '),
-          ` ${attributeName.slice(1)} `
-        )
+          `contains`,
+          fn(`concat`, ` `, fn(`normalize-space`, NodeSet.self()), ` `),
+          ` ${attributeName.slice(1)} `,
+        ),
       );
     }
 
-    if (attributeName.startsWith('#')) {
-      return NodeSet.attribute('id').filter(
-        NodeSet.self().is('=', attributeName.slice(1))
+    if (attributeName.startsWith(`#`)) {
+      return NodeSet.attribute(`id`).filter(
+        NodeSet.self().is(`=`, attributeName.slice(1)),
       );
     }
 
     return new NodeSet(`attribute::${attributeName}`);
   }
 
-  static comment(axisName: AxisName = 'child'): NodeSet {
+  static comment(axisName: AxisName = `child`): NodeSet {
     return new NodeSet(`${axisName}::comment()`);
   }
 
-  static element(elementName: string, axisName: AxisName = 'child'): NodeSet {
+  static element(elementName: string, axisName: AxisName = `child`): NodeSet {
     return new NodeSet(`${axisName}::${elementName}`);
   }
 
@@ -52,32 +53,32 @@ export class NodeSet extends Primitive {
     return new NodeSet(`namespace::${namespaceName}`);
   }
 
-  static node(axisName: AxisName = 'child'): NodeSet {
+  static node(axisName: AxisName = `child`): NodeSet {
     return new NodeSet(`${axisName}::node()`);
   }
 
   /** Shortcut for `NodeSet.node('parent')` */
   static parent(): NodeSet {
-    return NodeSet.node('parent');
+    return NodeSet.node(`parent`);
   }
 
   static processingInstruction(
-    axisName: AxisName = 'child',
-    targetName: string = ''
+    axisName: AxisName = `child`,
+    targetName: string = ``,
   ): NodeSet {
     return new NodeSet(`${axisName}::processing-instruction(${targetName})`);
   }
 
   static root(): NodeSet {
-    return new NodeSet('/');
+    return new NodeSet(`/`);
   }
 
   /** Shortcut for `NodeSet.node('self')` */
   static self(): NodeSet {
-    return NodeSet.node('self');
+    return NodeSet.node(`self`);
   }
 
-  static text(axisName: AxisName = 'child'): NodeSet {
+  static text(axisName: AxisName = `child`): NodeSet {
     return new NodeSet(`${axisName}::text()`);
   }
 
@@ -88,15 +89,15 @@ export class NodeSet extends Primitive {
           ? Primitive.literal(predicate)
           : predicate
         ).expression
-      }]`
+      }]`,
     );
   }
 
   path(operand: NodeSet): NodeSet {
     return new NodeSet(
-      `${this.expression === '/' ? '/' : `${this.expression} /`} ${
+      `${this.expression === `/` ? `/` : `${this.expression} /`} ${
         operand.expression
-      }`
+      }`,
     );
   }
 

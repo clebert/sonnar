@@ -1,20 +1,5 @@
 # Sonnar
 
-[![][ci-badge]][ci-link] [![][version-badge]][version-link]
-[![][license-badge]][license-link] [![][types-badge]][types-link]
-[![][size-badge]][size-link]
-
-[ci-badge]: https://github.com/clebert/sonnar/workflows/CI/badge.svg
-[ci-link]: https://github.com/clebert/sonnar
-[version-badge]: https://badgen.net/npm/v/sonnar
-[version-link]: https://www.npmjs.com/package/sonnar
-[license-badge]: https://badgen.net/npm/license/sonnar
-[license-link]: https://github.com/clebert/sonnar/blob/master/LICENSE
-[types-badge]: https://badgen.net/npm/types/sonnar
-[types-link]: https://github.com/clebert/sonnar
-[size-badge]: https://badgen.net/bundlephobia/minzip/sonnar
-[size-link]: https://bundlephobia.com/result?p=sonnar
-
 **Do you know [XPath 1.0](https://www.w3.org/TR/1999/REC-xpath-19991116/)?**
 This is basically the more powerful sibling of CSS selectors. Built into almost
 every [browser](https://caniuse.com/document-evaluate-xpath) and E2E testing
@@ -24,26 +9,6 @@ IntelliSense support, no syntax highlighting, and you quickly get lost in the
 parentheses. That's why I built Sonnar.
 
 > A lightweight TypeScript API for constructing XPath 1.0 expressions.
-
-## Contents
-
-- [Installation](#installation)
-- [Usage examples](#usage-examples)
-  - [Find all HackerNews posts which have more than 50 comments](#find-all-hackernews-posts-which-have-more-than-50-comments)
-  - [Select a set of nodes](#select-a-set-of-nodes)
-  - [Select attributes by their class or ID](#select-attributes-by-their-class-or-id)
-  - [Automatic setting of parentheses](#automatic-setting-of-parentheses)
-- [API documentation](#api-documentation)
-  - [`NodeSet`](#nodeset)
-  - [`AxisName`](#axisname)
-  - [`Primitive`](#primitive)
-  - [`Literal`](#literal)
-  - [`ComparisonOperator`](#comparisonoperator)
-  - [`fn()`](#fn)
-    - [Node-set functions](#node-set-functions)
-    - [String functions](#string-functions)
-    - [Boolean functions](#boolean-functions)
-    - [Number functions](#number-functions)
 
 ## Installation
 
@@ -59,19 +24,19 @@ npm install sonnar
 import {NodeSet, fn} from 'sonnar';
 
 const {expression} = NodeSet.any()
-  .filter(NodeSet.attribute('.athing'))
+  .filter(NodeSet.attribute(`.athing`))
   .filter(
-    NodeSet.element('tr', 'following-sibling')
-      .filter(fn('position').is('=', 1)) // less verbose alternative: .filter(1)
-      .path(NodeSet.element('td'))
+    NodeSet.element(`tr`, `following-sibling`)
+      .filter(fn(`position`).is(`=`, 1)) // less verbose alternative: .filter(1)
+      .path(NodeSet.element(`td`))
       .filter(2)
-      .path(NodeSet.element('a'))
-      .filter(fn('last'))
-      .filter(fn('substring-before', NodeSet.text(), '\u00A0').is('>', 50))
+      .path(NodeSet.element(`a`))
+      .filter(fn(`last`))
+      .filter(fn(`substring-before`, NodeSet.text(), `\u00A0`).is(`>`, 50)),
   );
 
 expect(expression).toBe(
-  'descendant-or-self::node()[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]'
+  `descendant-or-self::node()[attribute::class[contains(concat(" ", normalize-space(self::node()), " "), " athing ")]][following-sibling::tr[(position() = 1)] / child::td[2] / child::a[last()][(substring-before(child::text(), "\u00A0") > 50)]]`,
 );
 ```
 
@@ -109,10 +74,10 @@ The following is a list of examples taken from the
 import {NodeSet, fn} from 'sonnar';
 
 // selects the para element children of the context node
-NodeSet.element('para');
+NodeSet.element(`para`);
 
 // selects all element children of the context node
-NodeSet.element('*');
+NodeSet.element(`*`);
 
 // selects all text node children of the context node
 NodeSet.text();
@@ -121,110 +86,110 @@ NodeSet.text();
 NodeSet.node();
 
 // selects the name attribute of the context node
-NodeSet.attribute('name');
+NodeSet.attribute(`name`);
 
 // selects all the attributes of the context node
-NodeSet.attribute('*');
+NodeSet.attribute(`*`);
 
 // selects the para element descendants of the context node
-NodeSet.element('para', 'descendant');
+NodeSet.element(`para`, `descendant`);
 
 // selects all div ancestors of the context node
-NodeSet.element('div', 'ancestor');
+NodeSet.element(`div`, `ancestor`);
 
 // selects the div ancestors of the context node and, if the context node is a div element, the context node as well
-NodeSet.element('div', 'ancestor-or-self');
+NodeSet.element(`div`, `ancestor-or-self`);
 
 // selects the para element descendants of the context node and, if the context node is a para element, the context node as well
-NodeSet.element('para', 'descendant-or-self');
+NodeSet.element(`para`, `descendant-or-self`);
 
 // selects the context node if it is a para element, and otherwise selects nothing
-NodeSet.element('para', 'self');
+NodeSet.element(`para`, `self`);
 
 // selects the para element descendants of the chapter element children of the context node
-NodeSet.element('chapter').path(NodeSet.element('para', 'descendant'));
+NodeSet.element(`chapter`).path(NodeSet.element(`para`, `descendant`));
 
 // selects all para grandchildren of the context node
-NodeSet.element('*').path(NodeSet.element('para'));
+NodeSet.element(`*`).path(NodeSet.element(`para`));
 
 // selects the document root (which is always the parent of the document element)
 NodeSet.root();
 
 // selects all the para elements in the same document as the context node
-NodeSet.root().path(NodeSet.element('para', 'descendant'));
+NodeSet.root().path(NodeSet.element(`para`, `descendant`));
 
 // selects all the item elements that have an olist parent and that are in the same document as the context node
 NodeSet.root()
-  .path(NodeSet.element('olist', 'descendant'))
-  .path(NodeSet.element('item'));
+  .path(NodeSet.element(`olist`, `descendant`))
+  .path(NodeSet.element(`item`));
 
 // selects the first para child of the context node
-NodeSet.element('para').filter(fn('position').is('=', 1));
+NodeSet.element(`para`).filter(fn(`position`).is(`=`, 1));
 
 // selects the last para child of the context node
-NodeSet.element('para').filter(fn('position').is('=', fn('last')));
+NodeSet.element(`para`).filter(fn(`position`).is(`=`, fn(`last`)));
 
 // selects the last but one para child of the context node
-NodeSet.element('para').filter(fn('position').is('=', fn('last').subtract(1)));
+NodeSet.element(`para`).filter(fn(`position`).is(`=`, fn(`last`).subtract(1)));
 
 // selects all the para children of the context node other than the first para child of the context node
-NodeSet.element('para').filter(fn('position').is('>', 1));
+NodeSet.element(`para`).filter(fn(`position`).is(`>`, 1));
 
 // selects the next chapter sibling of the context node
-NodeSet.element('chapter', 'following-sibling').filter(
-  fn('position').is('=', 1)
+NodeSet.element(`chapter`, `following-sibling`).filter(
+  fn(`position`).is(`=`, 1),
 );
 
 // selects the previous chapter sibling of the context node
-NodeSet.element('chapter', 'preceding-sibling').filter(
-  fn('position').is('=', 1)
+NodeSet.element(`chapter`, `preceding-sibling`).filter(
+  fn(`position`).is(`=`, 1),
 );
 
 // selects the forty-second figure element in the document
 NodeSet.root()
-  .path(NodeSet.element('figure', 'descendant'))
-  .filter(fn('position').is('=', 42));
+  .path(NodeSet.element(`figure`, `descendant`))
+  .filter(fn(`position`).is(`=`, 42));
 
 // selects the second section of the fifth chapter of the doc document element
 NodeSet.root()
-  .path(NodeSet.element('doc'))
-  .path(NodeSet.element('chapter'))
-  .filter(fn('position').is('=', 5))
-  .path(NodeSet.element('section'))
-  .filter(fn('position').is('=', 2));
+  .path(NodeSet.element(`doc`))
+  .path(NodeSet.element(`chapter`))
+  .filter(fn(`position`).is(`=`, 5))
+  .path(NodeSet.element(`section`))
+  .filter(fn(`position`).is(`=`, 2));
 
 // selects all para children of the context node that have a type attribute with value warning
-NodeSet.element('para').filter(NodeSet.attribute('type').is('=', 'warning'));
+NodeSet.element(`para`).filter(NodeSet.attribute(`type`).is(`=`, `warning`));
 
 // selects the fifth para child of the context node that has a type attribute with value warning
-NodeSet.element('para')
-  .filter(NodeSet.attribute('type').is('=', 'warning'))
-  .filter(fn('position').is('=', 5));
+NodeSet.element(`para`)
+  .filter(NodeSet.attribute(`type`).is(`=`, `warning`))
+  .filter(fn(`position`).is(`=`, 5));
 
 // selects the fifth para child of the context node if that child has a type attribute with value warning
-NodeSet.element('para')
-  .filter(fn('position').is('=', 5))
-  .filter(NodeSet.attribute('type').is('=', 'warning'));
+NodeSet.element(`para`)
+  .filter(fn(`position`).is(`=`, 5))
+  .filter(NodeSet.attribute(`type`).is(`=`, `warning`));
 
 // selects the chapter children of the context node that have one or more title children with string-value equal to Introduction
-NodeSet.element('chapter').filter(
-  NodeSet.element('title').is('=', 'Introduction')
+NodeSet.element(`chapter`).filter(
+  NodeSet.element(`title`).is(`=`, `Introduction`),
 );
 
 // selects the chapter children of the context node that have one or more title children
-NodeSet.element('chapter').filter(NodeSet.element('title'));
+NodeSet.element(`chapter`).filter(NodeSet.element(`title`));
 
 // selects the chapter and appendix children of the context node
-NodeSet.element('*').filter(
-  NodeSet.element('chapter', 'self').or(NodeSet.element('appendix', 'self'))
+NodeSet.element(`*`).filter(
+  NodeSet.element(`chapter`, `self`).or(NodeSet.element(`appendix`, `self`)),
 );
 
 // selects the last chapter or appendix child of the context node
-NodeSet.element('*')
+NodeSet.element(`*`)
   .filter(
-    NodeSet.element('chapter', 'self').or(NodeSet.element('appendix', 'self'))
+    NodeSet.element(`chapter`, `self`).or(NodeSet.element(`appendix`, `self`)),
   )
-  .filter(fn('position').is('=', fn('last')));
+  .filter(fn(`position`).is(`=`, fn(`last`)));
 ```
 
 </details>
@@ -239,10 +204,10 @@ syntax as CSS class or ID selectors.
 import {NodeSet} from 'sonnar';
 
 // selects the class attribute of the context node that contains the value foo
-NodeSet.attribute('.foo');
+NodeSet.attribute(`.foo`);
 
 // selects the id attribute of the context node that has the value foo
-NodeSet.attribute('#foo');
+NodeSet.attribute(`#foo`);
 ```
 
 ### Automatic setting of parentheses
@@ -268,13 +233,13 @@ enclosed in parentheses.
 import {Primitive} from 'sonnar';
 
 // (((3 + 3) * 7) = 42)
-Primitive.literal(3).add(3).multiply(7).is('=', 42);
+Primitive.literal(3).add(3).multiply(7).is(`=`, 42);
 
 // (((7 * 3) + 3) != 42)
-Primitive.literal(7).multiply(3).add(3).is('!=', 42);
+Primitive.literal(7).multiply(3).add(3).is(`!=`, 42);
 
 // ((7 * (3 + 3)) = 42)
-Primitive.literal(7).multiply(Primitive.literal(3).add(3)).is('=', 42);
+Primitive.literal(7).multiply(Primitive.literal(3).add(3)).is(`=`, 42);
 ```
 
 Since the syntax of XPath 1.0 does not allow the right part of a path expression
@@ -304,20 +269,20 @@ import {NodeSet} from 'sonnar';
 class NodeSet extends Primitive {
   static any(): NodeSet; // Shortcut for `NodeSet.node('descendant-or-self')`
   static attribute(attributeName: string): NodeSet;
-  static comment(axisName: AxisName = 'child'): NodeSet;
-  static element(elementName: string, axisName: AxisName = 'child'): NodeSet;
+  static comment(axisName: AxisName = `child`): NodeSet;
+  static element(elementName: string, axisName: AxisName = `child`): NodeSet;
   static namespace(namespaceName: string): NodeSet;
-  static node(axisName: AxisName = 'child'): NodeSet;
+  static node(axisName: AxisName = `child`): NodeSet;
   static parent(): NodeSet; // Shortcut for `NodeSet.node('parent')`
 
   static processingInstruction(
-    axisName: AxisName = 'child',
-    targetName?: string
+    axisName: AxisName = `child`,
+    targetName?: string,
   ): NodeSet;
 
   static root(): NodeSet;
   static self(): NodeSet; // Shortcut for `NodeSet.node('self')`
-  static text(axisName: AxisName = 'child'): NodeSet;
+  static text(axisName: AxisName = `child`): NodeSet;
 
   filter(predicate: Literal | Primitive): NodeSet;
   path(operand: NodeSet): NodeSet;
@@ -443,7 +408,7 @@ function fn(
 function fn(
   functionName: 'starts-with',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -452,7 +417,7 @@ function fn(
 function fn(
   functionName: 'contains',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -461,7 +426,7 @@ function fn(
 function fn(
   functionName: 'substring-before',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -470,7 +435,7 @@ function fn(
 function fn(
   functionName: 'substring-after',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -480,7 +445,7 @@ function fn(
   functionName: 'substring',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive,
-  arg3?: Literal | Primitive
+  arg3?: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -488,7 +453,7 @@ function fn(
 /** `number string-length(string?)` */
 function fn(
   functionName: 'string-length',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -496,7 +461,7 @@ function fn(
 /** `string normalize-space(string?)` */
 function fn(
   functionName: 'normalize-space',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -506,7 +471,7 @@ function fn(
   functionName: 'translate',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive,
-  arg3: Literal | Primitive
+  arg3: Literal | Primitive,
 ): Primitive;
 ```
 
@@ -553,8 +518,3 @@ function fn(functionName: 'ceiling', arg: Literal | Primitive): Primitive;
 /** `number round(number)` */
 function fn(functionName: 'round', arg: Literal | Primitive): Primitive;
 ```
-
----
-
-Copyright (c) 2021, Clemens Akens. Released under the terms of the
-[MIT License](https://github.com/clebert/sonnar/blob/master/LICENSE).

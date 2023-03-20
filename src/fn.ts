@@ -1,5 +1,6 @@
-import {NodeSet} from './node-set';
-import {Literal, Primitive} from './primitive';
+import {NodeSet} from './node-set.js';
+import {Primitive} from './primitive.js';
+import type {Literal} from './primitive.js';
 
 /* Node-set functions *********************************************************/
 
@@ -29,7 +30,7 @@ export function fn(functionName: 'name', arg?: NodeSet): Primitive;
 /** `string string(object?)` */
 export function fn(
   functionName: 'string',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 
 /** `string concat(string, string, string*)` */
@@ -44,28 +45,28 @@ export function fn(
 export function fn(
   functionName: 'starts-with',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 
 /** `boolean contains(string, string)` */
 export function fn(
   functionName: 'contains',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 
 /** `string substring-before(string, string)` */
 export function fn(
   functionName: 'substring-before',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 
 /** `string substring-after(string, string)` */
 export function fn(
   functionName: 'substring-after',
   arg1: Literal | Primitive,
-  arg2: Literal | Primitive
+  arg2: Literal | Primitive,
 ): Primitive;
 
 /** `string substring(string, number, number?)` */
@@ -73,19 +74,19 @@ export function fn(
   functionName: 'substring',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive,
-  arg3?: Literal | Primitive
+  arg3?: Literal | Primitive,
 ): Primitive;
 
 /** `number string-length(string?)` */
 export function fn(
   functionName: 'string-length',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 
 /** `string normalize-space(string?)` */
 export function fn(
   functionName: 'normalize-space',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 
 /** `string translate(string, string, string)` */
@@ -93,7 +94,7 @@ export function fn(
   functionName: 'translate',
   arg1: Literal | Primitive,
   arg2: Literal | Primitive,
-  arg3: Literal | Primitive
+  arg3: Literal | Primitive,
 ): Primitive;
 
 /* Boolean functions **********************************************************/
@@ -101,7 +102,7 @@ export function fn(
 /** `boolean boolean(object)` */
 export function fn(
   functionName: 'boolean',
-  arg: Literal | Primitive
+  arg: Literal | Primitive,
 ): Primitive;
 
 /** `boolean not(boolean)` */
@@ -115,7 +116,7 @@ export function fn(functionName: 'lang', arg: Literal | Primitive): Primitive;
 /** `number number(object?)` */
 export function fn(
   functionName: 'number',
-  arg?: Literal | Primitive
+  arg?: Literal | Primitive,
 ): Primitive;
 
 /** `number sum(node-set)` */
@@ -127,7 +128,7 @@ export function fn(functionName: 'floor', arg: Literal | Primitive): Primitive;
 /** `number ceiling(number)` */
 export function fn(
   functionName: 'ceiling',
-  arg: Literal | Primitive
+  arg: Literal | Primitive,
 ): Primitive;
 
 /** `number round(number)` */
@@ -143,11 +144,11 @@ export function fn(
     .filter((arg) => arg !== undefined)
     .map(
       (arg) =>
-        (Primitive.isLiteral(arg) ? Primitive.literal(arg) : arg!).expression
+        (Primitive.isLiteral(arg) ? Primitive.literal(arg) : arg!).expression,
     )
-    .join(', ')})`;
+    .join(`, `)})`;
 
-  return functionName === 'id'
+  return functionName === `id`
     ? new NodeSet(expression)
     : new Primitive(expression);
 }

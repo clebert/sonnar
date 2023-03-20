@@ -1,3 +1,3 @@
-export * from './fn';
-export * from './node-set';
-export * from './primitive';
+export * from './fn.js';
+export * from './node-set.js';
+export * from './primitive.js';
