@@ -1,6 +1,7 @@
+import type {Literal} from './primitive.js';
+
 import {fn} from './fn.js';
 import {Primitive} from './primitive.js';
-import type {Literal} from './primitive.js';
 
 export type AxisName =
   | 'ancestor-or-self'

@@ -1,7 +1,7 @@
-import {expect, test} from '@jest/globals';
 import {fn} from './fn.js';
 import {NodeSet} from './node-set.js';
 import {Primitive} from './primitive.js';
+import {expect, test} from '@jest/globals';
 
 test(`fn()`, () => {
   const last = fn(`last`);

@@ -1,7 +1,7 @@
-import {expect, test} from '@jest/globals';
 import {fn} from './fn.js';
 import {NodeSet} from './node-set.js';
 import {Primitive} from './primitive.js';
+import {expect, test} from '@jest/globals';
 
 test(`README: Find all HackerNews posts which have more than 50 comments`, () => {
   const {expression} = NodeSet.any()

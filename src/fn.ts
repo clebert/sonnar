@@ -1,6 +1,7 @@
+import type {Literal} from './primitive.js';
+
 import {NodeSet} from './node-set.js';
 import {Primitive} from './primitive.js';
-import type {Literal} from './primitive.js';
 
 /* Node-set functions *********************************************************/
 

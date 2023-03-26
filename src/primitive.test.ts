@@ -1,5 +1,5 @@
-import {describe, expect, test} from '@jest/globals';
 import {Primitive} from './primitive.js';
+import {describe, expect, test} from '@jest/globals';
 
 describe(`Primitive`, () => {
   test(`static isLiteral()`, () => {

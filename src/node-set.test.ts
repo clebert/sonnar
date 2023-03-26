@@ -1,5 +1,5 @@
-import {describe, expect, test} from '@jest/globals';
 import {NodeSet} from './node-set.js';
+import {describe, expect, test} from '@jest/globals';
 
 describe(`NodeSet`, () => {
   test(`static any()`, () => {
