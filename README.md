@@ -1,5 +1,7 @@
 # Sonnar
 
+> A lightweight TypeScript API for constructing XPath 1.0 expressions.
+
 **Do you know [XPath 1.0](https://www.w3.org/TR/1999/REC-xpath-19991116/)?**
 This is basically the more powerful sibling of CSS selectors. Built into almost
 every [browser](https://caniuse.com/document-evaluate-xpath) and E2E testing
@@ -7,8 +9,6 @@ framework. The syntax and thus the DX is a bit cumbersome. Typically, an XPath
 expression is written as a JavaScript string. This means there is no
 IntelliSense support, no syntax highlighting, and you quickly get lost in the
 parentheses. That's why I built Sonnar.
-
-> A lightweight TypeScript API for constructing XPath 1.0 expressions.
 
 ## Installation
 
